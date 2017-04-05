@@ -1,6 +1,9 @@
 package tree
 
-import "fmt"
+import (
+	"fmt"
+	"stack"
+)
 
 // 二叉树节点
 type TreeNode struct {
@@ -37,7 +40,7 @@ func (bt *BinaryTree) PreOrderTraversalByRecursion(root *TreeNode) []int {
 }
 
 func preOrderTraversal(root *TreeNode, res []int) []int {
-	if root==nil {
+	if root == nil {
 		return res
 	}
 	res = append(res, root.Val)
@@ -46,10 +49,27 @@ func preOrderTraversal(root *TreeNode, res []int) []int {
 	return res
 }
 
-
 // 先序遍历 迭代版
 func (bt *BinaryTree) PreOrderTraversalByIteration(root *TreeNode) []int {
-	return nil
+	if root == nil {
+		return nil
+	}
+	// 借助stack保存当前节点
+	res := []int{}
+	s := stack.NewStack(0)
+	s.Push(root)
+	// 开始从stack中不断弹出节点，直至stack为空
+	for !s.IsEmpty() {
+		node := s.Pop().(*TreeNode)
+		if node.Right != nil {
+			s.Push(node.Right)
+		}
+		if node.Left != nil {
+			s.Push(node.Left)
+		}
+		res = append(res, node.Val)
+	}
+	return res
 }
 
 // 中序遍历 递归版

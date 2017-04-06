@@ -39,13 +39,13 @@ func (bt *BinaryTree) PreOrderTraversalByRecursion(root *TreeNode) []int {
 	return res
 }
 
-func preOrderTraversal(root *TreeNode, res []int) []int {
-	if root == nil {
+func preOrderTraversal(node *TreeNode, res []int) []int {
+	if node == nil {
 		return res
 	}
-	res = append(res, root.Val)
-	res = preOrderTraversal(root.Left, res)
-	res = preOrderTraversal(root.Right, res)
+	res = append(res, node.Val)
+	res = preOrderTraversal(node.Left, res)
+	res = preOrderTraversal(node.Right, res)
 	return res
 }
 
@@ -74,12 +74,43 @@ func (bt *BinaryTree) PreOrderTraversalByIteration(root *TreeNode) []int {
 
 // 中序遍历 递归版
 func (bt *BinaryTree) InOrderTraversalByRecursion() []int {
-	return nil
+	if bt.Root == nil {
+		return nil
+	}
+	res := make([]int, 0)
+	res = inOrderTraversal(bt.Root, res)
+	return res
+}
+
+func inOrderTraversal(node *TreeNode, res []int) []int {
+	if node == nil {
+		return res
+	}
+	res = inOrderTraversal(node.Left, res)
+	res = append(res, node.Val)
+	res = inOrderTraversal(node.Right, res)
+	return res
 }
 
 // 中序遍历 迭代版
 func (bt *BinaryTree) InOrderTraversalByIteration() []int {
-	return nil
+	if bt.Root == nil {
+		return nil
+	}
+	res := make([]int, 0)
+	s := stack.NewStack(0)
+	node := bt.Root
+	for (!s.IsEmpty()) || node != nil {
+		if node == nil {
+			node = s.Pop().(*TreeNode)
+			res = append(res, node.Val)
+			node = node.Right
+		} else {
+			s.Push(node)
+			node = node.Left
+		}
+	}
+	return res
 }
 
 // 后序遍历 递归版

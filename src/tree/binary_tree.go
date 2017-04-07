@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"fmt"
 	"stack"
 )
 
@@ -17,18 +16,25 @@ type BinaryTree struct {
 }
 
 // 根据输入数组构建一个二叉树，方便测试用，假设0表示这个节点不存在
-func initBinaryTreeWithArr(arr []int) *TreeNode {
+func newBinaryTree(arr []int) *BinaryTree {
 	if len(arr) == 0 || arr[0] == 0 {
 		return nil
 	}
-	tn := &TreeNode{Val: arr[0]}
-	fmt.Println(tn.Val)
-	if len(arr) > 0 {
-		tn.Left = initBinaryTreeWithArr(arr[1:])
+	// 当root节点从index为1开始时，一个index为i的节点的左子节点位于2i，右子节点位于2i+1
+	newArr := make([]int, len(arr)+1)
+	newArr[0] = 0
+	copy(newArr[1:], arr)
+	t := &BinaryTree{Root: initTreeNode(newArr, 1)}
+	return t
+}
+
+func initTreeNode(arr []int, index int) *TreeNode {
+	if index >= len(arr) || arr[index] == 0 {
+		return nil
 	}
-	if len(arr) > 1 {
-		tn.Right = initBinaryTreeWithArr(arr[2:])
-	}
+	tn := &TreeNode{Val: arr[index]}
+	tn.Left = initTreeNode(arr, 2*index)
+	tn.Right = initTreeNode(arr, 2*index+1)
 	return tn
 }
 
@@ -177,4 +183,22 @@ func (bt *BinaryTree) PostOrderTraversalByIteration() []int {
 		res = append(res, output.Pop().(*TreeNode).Val)
 	}
 	return res
+}
+
+// 判断一颗二叉树是不是平衡二叉树
+func (bt *BinaryTree) IsBalanced() bool {
+	isBalance, _ := isTreeBalanced(bt.Root)
+	return isBalance
+}
+
+func isTreeBalanced(t *TreeNode) (bool, int) {
+	if t == nil {
+		return true, 0
+	}
+	isLBalance, lDepth := isTreeBalanced(t.Left)
+	isRBalance, rDepth := isTreeBalanced(t.Right)
+	if lDepth < rDepth {
+		lDepth, rDepth = rDepth, lDepth
+	}
+	return (isLBalance && isRBalance) && (lDepth-rDepth <= 1), lDepth + 1
 }

@@ -25,8 +25,4 @@ _testmain.go
 *.prof
 bin/
 pkg/
-.idea/DataStructure.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/workspace.xml
-.idea/libraries/*
+.idea
